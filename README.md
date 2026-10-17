@@ -39,3 +39,7 @@ Log ada di `.run/be.log` dan `.run/fe.log`. `start.sh` otomatis menghentikan ins
 - [x] Dasbor, Data Produk, Pemasok (semua data dari API; tambah/edit khusus Admin)
 - [x] Pengaturan Pengguna
 - [x] Produk Masuk (Staf Gudang) dan Produk Keluar (Staf Area) dengan alokasi FEFO otomatis per batch; Admin hanya melihat
+
+## Deploy gratis (Neon + Vercel)
+
+Tanpa kartu kredit. Panduan lengkap langkah demi langkah ada di [DEPLOY.md](DEPLOY.md).

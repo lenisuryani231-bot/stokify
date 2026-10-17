@@ -8,7 +8,8 @@
     "build": "prisma generate && tsc",
     "start": "prisma migrate deploy && node dist/index.js",
     "db:migrate": "prisma migrate dev",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "build:vercel": "prisma generate && esbuild src/vercel.ts --bundle --platform=node --format=cjs --target=node20 --outfile=api/index.js --external:@prisma/client --external:.prisma/client --footer:js=\"module.exports = module.exports.default;\""
   },
   "keywords": [],
   "author": "",
@@ -32,6 +33,7 @@
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.6.5",
+    "esbuild": "^0.28.2",
     "prisma": "^6.19.3",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3"
