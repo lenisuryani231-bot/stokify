@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  STAF_GUDANG
+  STAF_AREA
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  nama      String
+  username  String   @unique
+  password  String
+  role      Role
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Supplier {
+  id        Int      @id @default(autoincrement())
+  nama      String
+  namaPic   String
+  telepon   String
+  email     String
+  alamat    String
+  batches   StockBatch[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id        Int      @id @default(autoincrement())
+  barcode   String   @unique
+  nama      String
+  kategori  String
+  satuan    String
+  minStok   Int
+  deletedAt DateTime?
+  batches   StockBatch[]
+  stockOuts StockOut[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Satu baris per penerimaan barang; sekaligus riwayat produk masuk.
+model StockBatch {
+  id            Int      @id @default(autoincrement())
+  productId     Int
+  product       Product  @relation(fields: [productId], references: [id])
+  supplierId    Int?
+  supplier      Supplier? @relation(fields: [supplierId], references: [id])
+  tglTerima     DateTime @db.Date
+  tglKadaluwarsa DateTime @db.Date
+  qtyMasuk      Int
+  qtySisa       Int
+  items         StockOutItem[]
+  createdAt     DateTime @default(now())
+
+  @@index([productId, tglKadaluwarsa])
+}
+
+model StockOut {
+  id         Int      @id @default(autoincrement())
+  productId  Int
+  product    Product  @relation(fields: [productId], references: [id])
+  tglKeluar  DateTime @db.Date
+  qty        Int
+  keterangan String
+  dibatalkan Boolean  @default(false)
+  items      StockOutItem[]
+  createdAt  DateTime @default(now())
+}
+
+// Hasil alokasi FEFO: batch mana yang terpakai oleh satu pengeluaran.
+model StockOutItem {
+  id         Int        @id @default(autoincrement())
+  stockOutId Int
+  stockOut   StockOut   @relation(fields: [stockOutId], references: [id])
+  batchId    Int
+  batch      StockBatch @relation(fields: [batchId], references: [id])
+  qty        Int
+}

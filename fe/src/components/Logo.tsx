@@ -1,0 +1,10 @@
+export function Logo({ size = 44 }: { size?: number }) {
+  return (
+    <div
+      className="flex items-center justify-center rounded-xl bg-brand font-bold text-white"
+      style={{ width: size, height: size, fontSize: size * 0.45 }}
+    >
+      St
+    </div>
+  )
+}
