@@ -31,7 +31,7 @@ DATABASE_URL="NEON_URL" npm run db:seed
 Ganti `NEON_URL` dengan string dari langkah 2 (pakai tanda kutip). Akun contoh yang terbuat: `admin`, `gudang`, `area`, kata sandi `password123`.
 
 ## 4. Backend di Vercel (gratis, tanpa kartu)
-Backend dijalankan sebagai serverless function di Vercel (paket Hobby), jadi tidak perlu hosting terpisah dan tidak ada kartu. Folder `be` sudah siap: `be/vercel.json`, `be/api/index.js` (hasil bundel aplikasi), dan `be/public`.
+Backend dijalankan sebagai serverless function di Vercel (paket Hobby), jadi tidak perlu hosting terpisah dan tidak ada kartu. Folder `be` sudah siap: `be/vercel.json`, `be/index.js` (titik masuk), dan `be/api/index.js` (hasil bundel aplikasi). Folder `be/public` tidak dipakai lagi, hapus kalau masih ada.
 
 1. Di terminal, bundel ulang dulu supaya `be/api/index.js` terbaru, lalu commit dan push:
    ```bash
@@ -48,7 +48,7 @@ Backend dijalankan sebagai serverless function di Vercel (paket Hobby), jadi tid
    - Project Name: misalnya `stokify-api`
    - Root Directory: `be`
    - Framework Preset: **Other**
-   - Build dan Output Directory dibiarkan (sudah diatur di `be/vercel.json`).
+   - Build Command dan Output Directory: **jangan di-override** (kosongkan, matikan toggle Override). Build Command sudah diatur di `be/vercel.json`.
 4. Buka **Environment Variables** (nilai ini rahasia dan aman di sini), tambahkan:
    - `DATABASE_URL` = string Neon versi **Pooled connection** (host berakhiran `-pooler`), lalu tambahkan di ujungnya `&pgbouncer=true&connection_limit=1`. Contoh: `postgresql://user:pw@ep-xxx-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&pgbouncer=true&connection_limit=1`
    - `JWT_SECRET` = teks acak minimal 32 karakter (`openssl rand -base64 48`)
@@ -74,5 +74,6 @@ Catatan: langkah 3 (migrate dan seed) tetap memakai string Neon **langsung** (bu
 
 ## Masalah umum
 - **Login gagal / 502 di Vercel**: host di `vercel.json` salah atau backend belum berhasil deploy. Cek `/api/health` di URL proyek backend.
+- **"No entrypoint found in output directory"**: Output Directory di dashboard berisi `public`. Buka Settings > Build and Deployment, kosongkan Output Directory, pastikan `be/index.js` ada dan folder `be/public` sudah dihapus, lalu Redeploy.
 - **/api/health error 500**: lihat Vercel > proyek backend > Logs. Biasanya `DATABASE_URL` atau `JWT_SECRET` belum diisi, atau `sslmode=require` tidak ada di string Neon.
 - **Halaman kosong saat refresh di sub-halaman**: pastikan `vercel.json` ikut ter-push (aturan rewrite ke `index.html`).
